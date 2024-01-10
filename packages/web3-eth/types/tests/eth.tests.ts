@@ -19,7 +19,7 @@
  */
 
 import {Log} from 'web3-core';
-import {
+import EthDefault, {
     BlockTransactionObject,
     BlockTransactionString,
     BlockHeader,
@@ -37,6 +37,9 @@ import {
 } from 'web3-eth';
 import BN = require('bn.js');
 import BigNumber from 'bignumber.js';
+
+// $ExpectType Eth
+const eth_default_empty = new EthDefault();
 
 // $ExpectType Eth
 const eth_empty = new Eth();
@@ -577,19 +580,17 @@ eth.getWork();
 eth.getWork((error: Error, result: string[]) => {});
 
 // $ExpectType Promise<boolean>
-eth.submitWork([
+eth.submitWork(
     '0x0000000000000001',
     '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
     '0xD1FE5700000000000000000000000000D1FE5700000000000000000000000000'
-]);
+);
 
 // $ExpectType Promise<boolean>
 eth.submitWork(
-    [
-        '0x0000000000000001',
-        '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-        '0xD1FE5700000000000000000000000000D1FE5700000000000000000000000000'
-    ],
+    '0x0000000000000001',
+    '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+    '0xD1FE5700000000000000000000000000D1FE5700000000000000000000000000',
     (error: Error, result: boolean) => {}
 );
 

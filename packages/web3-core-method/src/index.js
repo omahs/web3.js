@@ -164,10 +164,10 @@ Method.prototype.formatOutput = function (result) {
 
     if (Array.isArray(result)) {
         return result.map(function (res) {
-            return _this.outputFormatter && res ? _this.outputFormatter(res) : res;
+            return _this.outputFormatter && res ? _this.outputFormatter(res, this?.hexFormat) : res;
         });
     } else {
-        return this.outputFormatter && result ? this.outputFormatter(result) : result;
+        return this.outputFormatter && result ? this.outputFormatter(result, this?.hexFormat) : result;
     }
 };
 
@@ -637,7 +637,9 @@ Method.prototype.buildCall = function () {
             payload = method.toPayload(args);
 
         method.hexFormat = false;
-        if(method.call === 'eth_getTransactionReceipt'){
+        if (method.call === 'eth_getTransactionReceipt'
+            || method.call === 'eth_getTransactionByHash'
+            || method.name === 'getBlock') {
             method.hexFormat = (payload.params.length  < args.length && args[args.length - 1] === 'hex')
         }
         // CALLBACK function
@@ -651,7 +653,15 @@ Method.prototype.buildCall = function () {
                 if (!err && method.isRevertReasonString(result)){
                     reasonData = result.substring(10);
                 } else if (err && err.data){
-                    reasonData = err.data.substring(10);
+                    // workaround embedded error details got from some providers like MetaMask
+                    if (typeof err.data === 'object') {
+                        // Ganache has no `originalError` sub-object unlike others
+                        var originalError = err.data.originalError ?? err.data;
+                        reasonData = originalError.data.substring(10);
+                    }
+                    else {
+                        reasonData = err.data.substring(10);
+                    }
                 }
 
                 if (reasonData){
@@ -793,10 +803,20 @@ Method.prototype.buildCall = function () {
             return method.requestManager.send(payload, sendTxCallback);
         };
 
-        // Send the actual transaction
-        if (isSendTx
+        const hasSendTxObject = isSendTx
             && !!payload.params[0]
-            && typeof payload.params[0] === 'object'
+            && typeof payload.params[0] === 'object';
+
+        if (hasSendTxObject &&
+                payload.params[0].type === '0x1'
+                && typeof payload.params[0].accessList === 'undefined'
+            ) {
+                payload.params[0].accessList = [];
+            }
+      
+
+        // Send the actual transaction
+        if (hasSendTxObject
             && (
                 typeof payload.params[0].gasPrice === 'undefined'
                 && (

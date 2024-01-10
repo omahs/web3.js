@@ -592,7 +592,7 @@ Released with 1.0.0-beta.37 code base.
 
 ### Fixed
 -  Browser builds support polyfills (#5031) (#5053) (#4659) (#4767)
--  Update node version on actions to fix breaking mosaic test (#5354) 
+-  Update node version on actions to fix breaking mosaic test (#5354)
 -  Start incrementing jsonrpc.id from random number (#5327)
 -  `web3-eth-contract`'s `call` and `send` methods no longer mutate `options` argument (#5394)
 -  Improvement using provided gas options in web3-eth-accounts for eip-1559 transactions (#5012)
@@ -619,14 +619,14 @@ Released with 1.0.0-beta.37 code base.
 - Updated Webpack 4 to Webpack 5, more details at (#5629)
 - `crypto-browserify` module is now used only in webpack builds for polyfilling browsers (#5629)
 - Updated `ethereumjs-util` to `7.1.5` (#5629)
-- Updated `lerna` 4 to version 6 (#5680) 
+- Updated `lerna` 4 to version 6 (#5680)
 - Bump utils 0.12.0 to 0.12.5 (#5691)
 
 ### Fixed
 
 -  Fixed types for `web3.utils._jsonInterfaceMethodToString` (#5550)
 -  Fixed Next.js builds failing on Node.js v16, Abortcontroller added if it doesn't exist globally (#5601)
--  Builds fixed by updating all typescript versions to 4.1 (#5675) 
+-  Builds fixed by updating all typescript versions to 4.1 (#5675)
 
 ### Removed
 
@@ -635,10 +635,73 @@ Released with 1.0.0-beta.37 code base.
 ### Added
 
 - `https-browserify`, `process`, `stream-browserify`, `stream-http`, `crypto-browserify` added to dev-dependencies for polyfilling (#5629)
-- Add `readable-stream` to dev-dependancies for webpack (#5629) 
+- Add `readable-stream` to dev-dependancies for webpack (#5629)
 
 ### Security
 -  `npm audit fix` for libraries update (#5726)
 
-## [Unreleased]
+## [1.9.0]
 
+### Fixed
+
+  - Fixed skipped ws-ganache tests (#5759)
+  - Fixed "provider started to reconnect error" in web3-provider-ws (#5820)
+  - Fixed Error: Number can only safely store up to 53 bits (#5845)
+  - Fixed types for packages which have default exports but not declared default export in .d.ts (#5866)
+  - Fixed Transaction type by adding missing properties (#5856)
+
+### Changed
+
+  - Add optional `hexFormat` param to `getTransaction` and `getBlock` that accepts the value `'hex'` (#5845)
+  - `utils.toNumber` and `utils.hexToNumber` can now return the large unsafe numbers as `BigInt`, if `true` was passed to a new optional parameter called `bigIntOnOverflow` (#5845)
+  - Updated @types/bn.js dependency to 5.1.1 in web3, web3-core and web3-eth-contract as reason mentioned in #5640 (#5885)
+  - Add description to error for failed connection on websocket (#5884)
+
+
+### Security
+  - Updated dependencies (#5885)
+
+## [1.10.0]
+
+### Fixed
+
+  - Improved the error propagation in `web3-providers-http` package to effectively propagate useful error infomation about failed HTTP connections (#5955)
+  - Fixed "Uncaught TypeError" calling a contract function that revert using MetaMask (#4454) and related "n.data.substring is not a function", that is raised when there is a revert and `web.eth.handleRevert = true` (#6000)
+
+### Changed
+
+  - `transaction.type` is now formatted to a hex string before being send to provider (#5979)
+  - When sending a transaction, if `transaction.type === '0x1' && transaction.accessList === undefined`, then `transaction.accessList` is set to `[]` (#5979)
+  - Removed an unnecessary `chainId` parameter from `toChecksumAddress()` function types (#5888)
+### Added
+-   Added support for `getPastEvents` method to filter `allEvents` and specific event (#6015)
+
+### Security
+  - Updated dependencies (#6044)
+
+
+## [1.10.1]
+
+### Fixed
+
+- Builds fixed by updating all typescript versions to 4.9.5 (#6238)
+- ABI encoding for large negative `int`s (#6239)
+- Updated type file for `submitWork` parameters, accepts 3 parameters instead of an array (#5200)
+
+### Changed
+- Replace ethereumjs-util with @ethereumjs/util (#6283)
+
+
+## [1.10.2]
+
+### Fixed
+
+- Fixed broken fetch for Node.js > 18.x and fixed double callback (#6381)
+
+## [1.10.3]
+
+### Security
+  - `web3-eth-accounts`: Bumped `@ethereumjs` dependencies (#6457)
+  - Updated dependencies (#6491)
+
+  ## [Unreleased]
